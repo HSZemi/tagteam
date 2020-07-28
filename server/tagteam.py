@@ -20,8 +20,10 @@ STATE = {
         "secret": "secret",
         "proActiveUntil": datetime.now(),
         "proCooldownUntil": datetime.now()
-    }
+    },
+    "secret": "secret"
 }
+
 
 def load_config():
     config_file = Path('config.json')
@@ -33,8 +35,11 @@ def load_config():
         STATE['polo']['pro'] = config['polo']['pro']
         STATE['polo']['noob'] = config['polo']['noob']
         STATE['polo']['secret'] = config['polo']['secret']
+        STATE['secret'] = config['secret']
+
 
 load_config()
+
 
 def transformed_state():
     now = datetime.now()
@@ -70,6 +75,23 @@ def activate():
         if STATE[team]['proCooldownUntil'] < now:
             STATE[team]['proActiveUntil'] = now + timedelta(0, 3 * 60)
             STATE[team]['proCooldownUntil'] = now + timedelta(0, 8 * 60)
+
+
+@app.post('/tagteam/reset')
+def reset():
+    secret = request.forms.get('secret')
+    team = request.forms.get('team')
+    now = datetime.now()
+    if secret == STATE['secret']:
+        if team in STATE:
+            STATE[team]['proActiveUntil'] = now
+            STATE[team]['proCooldownUntil'] = now
+        elif team is None:
+            for team in ('marco', 'polo'):
+                STATE[team]['proActiveUntil'] = now
+                STATE[team]['proCooldownUntil'] = now
+    else:
+        raise HTTPError(status=403)
 
 
 def main():

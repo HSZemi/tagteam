@@ -8,5 +8,6 @@
     "pro": "DauT",
     "noob": "azure_sentry",
     "secret": "arbalester"    
-  }
+  },
+  "secret": "secret"
 }
