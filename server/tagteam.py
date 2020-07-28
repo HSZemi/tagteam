@@ -94,6 +94,51 @@ def reset():
         raise HTTPError(status=403)
 
 
+@app.post('/tagteam/config')
+def config():
+    secret = request.forms.get('secret')
+    if secret != STATE['secret']:
+        raise HTTPError(status=403)
+
+    configuration = {
+        "marco": {
+            "pro": "pro",
+            "noob": "noob",
+            "secret": "secret"
+        },
+        "polo": {
+            "pro": "pro",
+            "noob": "noob",
+            "secret": "secret"
+        },
+        "secret": "secret"
+    }
+    config_file = Path('config.json')
+    if config_file.exists():
+        configuration = json.loads(config_file.read_text())
+    team = request.forms.get('team')
+    newsecret = request.forms.get('newsecret')
+    pro = request.forms.get('pro')
+    noob = request.forms.get('noob')
+
+    if team is None:
+        if newsecret is not None:
+            configuration['secret'] = newsecret
+            STATE['secret'] = newsecret
+    elif team in ('marco', 'polo'):
+        if newsecret is not None:
+            configuration[team]['secret'] = newsecret
+            STATE[team]['secret'] = newsecret
+        if pro is not None:
+            configuration[team]['pro'] = pro
+            STATE[team]['pro'] = pro
+        if noob is not None:
+            configuration[team]['noob'] = noob
+            STATE[team]['noob'] = noob
+
+    config_file.write_text(json.dumps(configuration, indent=4))
+
+
 def main():
     run(app=app, host='localhost', port=8080, debug=True, reloader=True)
 
