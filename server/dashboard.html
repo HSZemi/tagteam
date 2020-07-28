@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tagteam dashboard</title>
+</head>
+<body>
+<h1>tagteam dashboard</h1>
+<p>
+    <a href="https://aoe2se.uber.space/tagteam/status" target="_blank">Show status</a>
+</p>
+<p>
+    <label for="secret">secret</label>
+    <input type="text" id="secret"/>
+</p>
+<p>
+    <button onclick="resetTimers()">Reset Timers</button>
+</p>
+
+<h2>Team marco</h2>
+<label for="marco_pro">Pro</label>
+<input id="marco_pro" type="text"/>
+<label for="marco_noob">Noob</label>
+<input id="marco_noob" type="text"/>
+<button onclick="save('marco')">Save</button>
+
+<h2>Team polo</h2>
+<label for="polo_pro">Pro</label>
+<input id="polo_pro" type="text"/>
+<label for="polo_noob">Noob</label>
+<input id="polo_noob" type="text"/>
+<button onclick="save('polo')">Save</button>
+
+<script>
+    function load() {
+        fetch('/tagteam/status')
+            .then(data => data.json())
+            .then(json => {
+                document.getElementById('marco_pro').value = json.marco.pro;
+                document.getElementById('marco_noob').value = json.marco.noob;
+                document.getElementById('polo_pro').value = json.polo.pro;
+                document.getElementById('polo_noob').value = json.polo.noob;
+            });
+    }
+
+    function save(team) {
+        const formData = new FormData();
+
+        formData.append('secret', document.getElementById('secret').value);
+        formData.append('team', team);
+        formData.append('pro', document.getElementById(team + '_pro').value);
+        formData.append('noob', document.getElementById(team + '_noob').value);
+
+        fetch('/tagteam/config', {
+            method: 'POST',
+            body: formData
+        })
+            .then(result => {
+                load();
+                alert('Done');
+            })
+    }
+
+    function resetTimers() {
+        const formData = new FormData();
+
+        formData.append('secret', document.getElementById('secret').value);
+
+        fetch('/tagteam/reset', {
+            method: 'POST',
+            body: formData
+        })
+            .then(result => {
+                load();
+                alert('Done');
+            });
+    }
+
+    load();
+</script>
+</body>
+</html>
