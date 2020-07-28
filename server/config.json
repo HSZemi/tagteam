@@ -7,7 +7,8 @@
   "polo": {
     "pro": "DauT",
     "noob": "azure_sentry",
-    "secret": "arbalester"    
+    "secret": "arbalester"
   },
-  "secret": "secret"
+  "secret": "secret",
+  "speed": 1.7
 }

@@ -21,7 +21,8 @@ STATE = {
         "proActiveUntil": datetime.now(),
         "proCooldownUntil": datetime.now()
     },
-    "secret": "secret"
+    "secret": "secret",
+    "speed": 1.7
 }
 
 
@@ -36,6 +37,7 @@ def load_config():
         STATE['polo']['noob'] = config['polo']['noob']
         STATE['polo']['secret'] = config['polo']['secret']
         STATE['secret'] = config['secret']
+        STATE['speed'] = config['speed']
 
 
 load_config()
@@ -47,14 +49,14 @@ def transformed_state():
         "marco": {
             "pro": STATE['marco']['pro'],
             "noob": STATE['marco']['noob'],
-            "proActiveFor": max((STATE['marco']['proActiveUntil'] - now).total_seconds(), 0),
-            "proCooldown": max((STATE['marco']['proCooldownUntil'] - now).total_seconds(), 0)
+            "proActiveFor": max((STATE['marco']['proActiveUntil'] - now).total_seconds() * STATE['speed'], 0),
+            "proCooldown": max((STATE['marco']['proCooldownUntil'] - now).total_seconds() * STATE['speed'], 0)
         },
         "polo": {
             "pro": STATE['polo']['pro'],
             "noob": STATE['polo']['noob'],
-            "proActiveFor": max((STATE['polo']['proActiveUntil'] - now).total_seconds(), 0),
-            "proCooldown": max((STATE['polo']['proCooldownUntil'] - now).total_seconds(), 0)
+            "proActiveFor": max((STATE['polo']['proActiveUntil'] - now).total_seconds() * STATE['speed'], 0),
+            "proCooldown": max((STATE['polo']['proCooldownUntil'] - now).total_seconds() * STATE['speed'], 0)
         }
     }
 
@@ -73,8 +75,8 @@ def activate():
         if secret != STATE[team]['secret']:
             raise HTTPError(status=403)
         if STATE[team]['proCooldownUntil'] < now:
-            STATE[team]['proActiveUntil'] = now + timedelta(0, 3 * 60)
-            STATE[team]['proCooldownUntil'] = now + timedelta(0, 8 * 60)
+            STATE[team]['proActiveUntil'] = now + timedelta(0, 3 * 60 / STATE['speed'])
+            STATE[team]['proCooldownUntil'] = now + timedelta(0, 8 * 60 / STATE['speed'])
 
 
 @app.post('/tagteam/reset')
@@ -111,13 +113,15 @@ def config():
             "noob": "noob",
             "secret": "secret"
         },
-        "secret": "secret"
+        "secret": "secret",
+        "speed": 1.7
     }
     config_file = Path('config.json')
     if config_file.exists():
         configuration = json.loads(config_file.read_text())
     team = request.forms.get('team')
     newsecret = request.forms.get('newsecret')
+    speed = request.forms.get('speed')
     pro = request.forms.get('pro')
     noob = request.forms.get('noob')
 
@@ -135,6 +139,12 @@ def config():
         if noob is not None:
             configuration[team]['noob'] = noob
             STATE[team]['noob'] = noob
+    if speed is not None:
+        try:
+            configuration['speed'] = float(speed)
+            STATE['speed'] = float(speed)
+        except ValueError:
+            pass
 
     config_file.write_text(json.dumps(configuration, indent=4))
 
