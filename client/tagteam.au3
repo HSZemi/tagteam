@@ -21,14 +21,14 @@ Local $hMainGUI = GUICreate("TagTeam", 180, $height, -1, -1, BitXOR($GUI_SS_DEFA
 GUISetOnEvent($GUI_EVENT_CLOSE, "CLOSEButton")
 Global $marcoProIndicatorLabel = GUICtrlCreateLabel("►", 15, 10, 10, 16)
 Global $marcoNoobIndicatorLabel = GUICtrlCreateLabel("►", 15, 30, 10, 16)
-Global $marcoProLabel = GUICtrlCreateLabel("", 30, 10, 100, 16)
-Global $marcoNoobLabel = GUICtrlCreateLabel("", 30, 30, 100, 16)
+Global $marcoProLabel = GUICtrlCreateLabel("", 30, 10, 90, 16)
+Global $marcoNoobLabel = GUICtrlCreateLabel("", 30, 30, 90, 16)
 Global $marcoProTimeLabel = GUICtrlCreateLabel("", 130, 10, 100, 16)
 
 Global $poloProIndicatorLabel = GUICtrlCreateLabel("►", 15, 60, 10, 16)
 Global $poloNoobIndicatorLabel = GUICtrlCreateLabel("►", 15, 80, 10, 16)
-Global $poloProLabel = GUICtrlCreateLabel("", 30, 60, 100, 16)
-Global $poloNoobLabel = GUICtrlCreateLabel("", 30, 80, 100, 16)
+Global $poloProLabel = GUICtrlCreateLabel("", 30, 60, 90, 16)
+Global $poloNoobLabel = GUICtrlCreateLabel("", 30, 80, 90, 16)
 Global $poloProTimeLabel = GUICtrlCreateLabel("", 130, 60, 100, 16)
 
 Global $marcoProActive = False
@@ -76,7 +76,7 @@ Func updateGuiValues()
    If $marcoProActiveFor > 0 Then
 	  GUICtrlSetData($marcoProIndicatorLabel, "►")
 	  GUICtrlSetData($marcoNoobIndicatorLabel, "")
-	  GUICtrlSetData($marcoProTimeLabel, StringFormat("%.1f", $marcoProActiveFor))
+	  GUICtrlSetData($marcoProTimeLabel, formatTime($marcoProActiveFor))
 	  GUICtrlSetBkColor($marcoProLabel, $COLOR_GREEN)
 	  GUICtrlSetColor($marcoProLabel, $COLOR_WHITE)
 	  GUICtrlSetColor($marcoProTimeLabel, $COLOR_BLACK)
@@ -92,7 +92,7 @@ Func updateGuiValues()
 	  GUICtrlSetColor($marcoProLabel, $COLOR_BLACK)
 	  GUICtrlSetColor($marcoProTimeLabel, $COLOR_GRAY)
 	  If $marcoProCooldown > 0 Then
-		 GUICtrlSetData($marcoProTimeLabel, StringFormat("%.1f", $marcoProCooldown))
+		 GUICtrlSetData($marcoProTimeLabel, formatTime($marcoProCooldown))
 		 disableHelpButton("marco")
 	  Else
 		 GUICtrlSetData($marcoProTimeLabel, "")
@@ -107,7 +107,7 @@ Func updateGuiValues()
    If $poloProActiveFor > 0 Then
 	  GUICtrlSetData($poloProIndicatorLabel, "►")
 	  GUICtrlSetData($poloNoobIndicatorLabel, "")
-	  GUICtrlSetData($poloProTimeLabel, StringFormat("%.1f", $poloProActiveFor))
+	  GUICtrlSetData($poloProTimeLabel, formatTime($poloProActiveFor))
 	  GUICtrlSetBkColor($poloProLabel, $COLOR_GREEN)
 	  GUICtrlSetColor($poloProLabel, $COLOR_WHITE)
 	  GUICtrlSetColor($poloProTimeLabel, $COLOR_BLACK)
@@ -123,7 +123,7 @@ Func updateGuiValues()
 	  GUICtrlSetColor($poloProLabel, $COLOR_BLACK)
 	  GUICtrlSetColor($poloProTimeLabel, $COLOR_GRAY)
 	  If $poloProCooldown > 0 Then
-		 GUICtrlSetData($poloProTimeLabel, StringFormat("%.1f", $poloProCooldown))
+		 GUICtrlSetData($poloProTimeLabel, formatTime($poloProCooldown))
 		 disableHelpButton("polo")
 	  Else
 		 GUICtrlSetData($poloProTimeLabel, "")
@@ -135,6 +135,12 @@ Func updateGuiValues()
 	  EndIf
    EndIf
 
+EndFunc
+
+Func formatTime($seconds)
+   Local $m = Int($seconds / 60)
+   Local $s = Mod($seconds, 60)
+   return StringFormat("%02i:%02i", $m, $s)
 EndFunc
 
 Func enableHelpButton($team)
