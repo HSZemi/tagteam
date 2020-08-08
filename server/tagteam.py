@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from bottle import get, post, run, request, Bottle, HTTPError
+from bottle import get, post, run, request, Bottle, HTTPError, static_file
 
 from pathlib import Path
 import json
@@ -59,6 +59,11 @@ def transformed_state():
             "proCooldown": max((STATE['polo']['proCooldownUntil'] - now).total_seconds() * STATE['speed'], 0)
         }
     }
+
+
+@app.get('/')
+def index():
+    return static_file('dashboard.html', root=Path(__file__).parent)
 
 
 @app.get('/status')
