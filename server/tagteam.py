@@ -29,15 +29,15 @@ STATE = {
 def load_config():
     config_file = Path('config.json')
     if config_file.exists():
-        config = json.loads(config_file.read_text())
-        STATE['marco']['pro'] = config['marco']['pro']
-        STATE['marco']['noob'] = config['marco']['noob']
-        STATE['marco']['secret'] = config['marco']['secret']
-        STATE['polo']['pro'] = config['polo']['pro']
-        STATE['polo']['noob'] = config['polo']['noob']
-        STATE['polo']['secret'] = config['polo']['secret']
-        STATE['secret'] = config['secret']
-        STATE['speed'] = config['speed']
+        conf = json.loads(config_file.read_text())
+        STATE['marco']['pro'] = conf['marco']['pro']
+        STATE['marco']['noob'] = conf['marco']['noob']
+        STATE['marco']['secret'] = conf['marco']['secret']
+        STATE['polo']['pro'] = conf['polo']['pro']
+        STATE['polo']['noob'] = conf['polo']['noob']
+        STATE['polo']['secret'] = conf['polo']['secret']
+        STATE['secret'] = conf['secret']
+        STATE['speed'] = conf['speed']
 
 
 load_config()
@@ -61,12 +61,12 @@ def transformed_state():
     }
 
 
-@app.get('/tagteam/status')
+@app.get('/status')
 def status():
     return transformed_state()
 
 
-@app.post('/tagteam/activate')
+@app.post('/activate')
 def activate():
     team = request.forms.get('team')
     secret = request.forms.get('secret')
@@ -79,7 +79,7 @@ def activate():
             STATE[team]['proCooldownUntil'] = now + timedelta(0, 8 * 60 / STATE['speed'])
 
 
-@app.post('/tagteam/reset')
+@app.post('/reset')
 def reset():
     secret = request.forms.get('secret')
     team = request.forms.get('team')
@@ -96,7 +96,7 @@ def reset():
         raise HTTPError(status=403)
 
 
-@app.post('/tagteam/config')
+@app.post('/config')
 def config():
     secret = request.forms.get('secret')
     if secret != STATE['secret']:

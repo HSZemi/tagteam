@@ -7,7 +7,7 @@
 <body>
 <h1>tagteam dashboard</h1>
 <p>
-    <a href="https://aoe2se.uber.space/tagteam/status" target="_blank">Show status</a>
+    <a href="/status" target="_blank">Show status</a>
 </p>
 <p>
     <label for="secret">secret</label>
@@ -33,7 +33,7 @@
 
 <script>
     function load() {
-        fetch('/tagteam/status')
+        fetch('/status')
             .then(data => data.json())
             .then(json => {
                 document.getElementById('marco_pro').value = json.marco.pro;
@@ -51,7 +51,7 @@
         formData.append('pro', document.getElementById(team + '_pro').value);
         formData.append('noob', document.getElementById(team + '_noob').value);
 
-        fetch('/tagteam/config', {
+        fetch('/config', {
             method: 'POST',
             body: formData
         })
@@ -66,7 +66,7 @@
 
         formData.append('secret', document.getElementById('secret').value);
 
-        fetch('/tagteam/reset', {
+        fetch('/reset', {
             method: 'POST',
             body: formData
         })
