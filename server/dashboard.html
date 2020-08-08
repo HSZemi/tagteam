@@ -31,6 +31,18 @@
 <input id="polo_noob" type="text"/>
 <button onclick="save('polo')">Save</button>
 
+<h2>For Debugging only</h2>
+<h3>Team marco</h3>
+<label for="marco_secret">Team Secret</label>
+<input id="marco_secret" type="text"/>
+<button onclick="activateCountdown('marco')">Sub in Pro</button>
+
+<h3>Team polo</h3>
+<label for="polo_secret">Team Secret</label>
+<input id="polo_secret" type="text"/>
+<button onclick="activateCountdown('polo')">Sub in Pro</button>
+
+
 <script>
     function load() {
         fetch('/status')
@@ -52,6 +64,22 @@
         formData.append('noob', document.getElementById(team + '_noob').value);
 
         fetch('/config', {
+            method: 'POST',
+            body: formData
+        })
+            .then(result => {
+                load();
+                alert('Done');
+            })
+    }
+
+    function activateCountdown(team) {
+        const formData = new FormData();
+
+        formData.append('secret', document.getElementById(team+'_secret').value);
+        formData.append('team', team);
+
+        fetch('/activate', {
             method: 'POST',
             body: formData
         })
