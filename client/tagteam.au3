@@ -9,6 +9,7 @@
 
 Global $ownTeam = IniRead("tagteam.ini", "tagteam", "team", "")
 Global $secret = IniRead("tagteam.ini", "tagteam", "secret", "")
+Global $urlprefix = IniRead("tagteam.ini", "tagteam", "urlprefix", "http://localhost")
 
 Opt("GUIOnEventMode", 1) ; Change to OnEvent mode
 
@@ -48,7 +49,7 @@ While 1
 WEnd
 
 Func helpButton()
-    HttpPost("https://aoe2se.uber.space/tagteam/activate", "secret="&$secret&"&team="&$ownTeam)
+    HttpPost($urlprefix&"/activate", "secret="&$secret&"&team="&$ownTeam)
 EndFunc
 
 Func CLOSEButton()
@@ -57,7 +58,7 @@ EndFunc
 
 
 Func updateGuiValues()
-   $URL = "https://aoe2se.uber.space/tagteam/status"
+   $URL = $urlprefix&"/status"
    $data = _INetGetSource($URL)
    $object = Json_Decode($data)
    $marcoPro = Json_Get($object, ".marco.pro")
