@@ -18,7 +18,7 @@ If $secret == "" Then
    $height = 110
 EndIf
 
-Local $hMainGUI = GUICreate("TagTeam", 180, $height, -1, -1, BitXOR($GUI_SS_DEFAULT_GUI, $WS_MINIMIZEBOX), $WS_EX_TOPMOST)
+Global $hMainGUI = GUICreate("TagTeam", 180, $height, -1, -1, BitXOR($GUI_SS_DEFAULT_GUI, $WS_MINIMIZEBOX), $WS_EX_TOPMOST)
 GUISetOnEvent($GUI_EVENT_CLOSE, "CLOSEButton")
 Global $marcoProIndicatorLabel = GUICtrlCreateLabel("►", 15, 10, 10, 16)
 Global $marcoNoobIndicatorLabel = GUICtrlCreateLabel("►", 15, 30, 10, 16)
@@ -158,7 +158,10 @@ EndFunc
 
 
 Func showPlayer($filename)
-   SplashImageOn($filename, $filename, -1, -1, -1, -1, $DLG_NOTITLE);
-   Sleep(2000);
-   SplashOff();
+   $pos = WinGetPos($hMainGUI)
+   $xpos = $pos[0] - (200 - $pos[2]) / 2
+   $ypos = $pos[1] - (200 - $pos[3]) / 2
+   SplashImageOn($filename, $filename, 200, 200, $xpos, $ypos, $DLG_NOTITLE)
+   Beep(500, 2000)
+   SplashOff()
 EndFunc
