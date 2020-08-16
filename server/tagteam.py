@@ -12,14 +12,16 @@ STATE = {
         "noob": "Snippy",
         "secret": "secret",
         "proActiveUntil": datetime.now(),
-        "proCooldownUntil": datetime.now()
+        "proCooldownUntil": datetime.now(),
+        "counter": 0
     },
     "polo": {
         "pro": "Hera",
         "noob": "Tommie",
         "secret": "secret",
         "proActiveUntil": datetime.now(),
-        "proCooldownUntil": datetime.now()
+        "proCooldownUntil": datetime.now(),
+        "counter": 0
     },
     "secret": "secret",
     "speed": 1.7
@@ -50,14 +52,17 @@ def transformed_state():
             "pro": STATE['marco']['pro'],
             "noob": STATE['marco']['noob'],
             "proActiveFor": max((STATE['marco']['proActiveUntil'] - now).total_seconds() * STATE['speed'], 0),
-            "proCooldown": max((STATE['marco']['proCooldownUntil'] - now).total_seconds() * STATE['speed'], 0)
+            "proCooldown": max((STATE['marco']['proCooldownUntil'] - now).total_seconds() * STATE['speed'], 0),
+            "counter": STATE['marco']['counter']
         },
         "polo": {
             "pro": STATE['polo']['pro'],
             "noob": STATE['polo']['noob'],
             "proActiveFor": max((STATE['polo']['proActiveUntil'] - now).total_seconds() * STATE['speed'], 0),
-            "proCooldown": max((STATE['polo']['proCooldownUntil'] - now).total_seconds() * STATE['speed'], 0)
-        }
+            "proCooldown": max((STATE['polo']['proCooldownUntil'] - now).total_seconds() * STATE['speed'], 0),
+            "counter": STATE['polo']['counter']
+        },
+        "speed": STATE['speed']
     }
 
 
@@ -82,6 +87,7 @@ def activate():
         if STATE[team]['proCooldownUntil'] < now:
             STATE[team]['proActiveUntil'] = now + timedelta(0, 3 * 60 / STATE['speed'])
             STATE[team]['proCooldownUntil'] = now + timedelta(0, 8 * 60 / STATE['speed'])
+            STATE[team]['counter'] += 1
 
 
 @app.post('/reset')
@@ -93,10 +99,12 @@ def reset():
         if team in STATE:
             STATE[team]['proActiveUntil'] = now
             STATE[team]['proCooldownUntil'] = now
+            STATE[team]['counter'] = 0
         elif team is None:
             for team in ('marco', 'polo'):
                 STATE[team]['proActiveUntil'] = now
                 STATE[team]['proCooldownUntil'] = now
+                STATE[team]['counter'] = 0
     else:
         raise HTTPError(status=403)
 
