@@ -13,31 +13,44 @@ Global $urlprefix = IniRead("tagteam.ini", "tagteam", "urlprefix", "http://local
 
 Opt("GUIOnEventMode", 1) ; Change to OnEvent mode
 
-Local $height = 150
+Local $height = 125
 If $secret == "" Then
    $height = 110
 EndIf
 
-Global $hMainGUI = GUICreate("TagTeam", 180, $height, -1, -1, BitXOR($GUI_SS_DEFAULT_GUI, $WS_MINIMIZEBOX), $WS_EX_TOPMOST)
+Global $hMainGUI = GUICreate("TagTeam", 130, $height, -1, -1, BitXOR($GUI_SS_DEFAULT_GUI, $WS_MINIMIZEBOX), $WS_EX_TOPMOST)
 GUISetOnEvent($GUI_EVENT_CLOSE, "CLOSEButton")
-Global $marcoProIndicatorLabel = GUICtrlCreateLabel("►", 15, 10, 10, 16)
-Global $marcoNoobIndicatorLabel = GUICtrlCreateLabel("►", 15, 30, 10, 16)
-Global $marcoProLabel = GUICtrlCreateLabel("", 30, 10, 90, 16)
-Global $marcoNoobLabel = GUICtrlCreateLabel("", 30, 30, 90, 16)
-Global $marcoProTimeLabel = GUICtrlCreateLabel("", 130, 10, 100, 16)
+Global $marcoProIndicatorLabel = GUICtrlCreateLabel("►", 5, 5, 10, 16)
+Global $marcoNoobIndicatorLabel = GUICtrlCreateLabel("►", 5, 25, 10, 16)
+Global $marcoProLabel = GUICtrlCreateLabel("", 20, 5, 65, 16)
+Global $marcoNoobLabel = GUICtrlCreateLabel("", 20, 25, 65, 16)
+Global $marcoProTimeLabel = GUICtrlCreateLabel("", 90, 5, 35, 16)
+Global $marcoCounterLabel = GUICtrlCreateLabel("", 90, 25, 35, 16)
 
-Global $poloProIndicatorLabel = GUICtrlCreateLabel("►", 15, 60, 10, 16)
-Global $poloNoobIndicatorLabel = GUICtrlCreateLabel("►", 15, 80, 10, 16)
-Global $poloProLabel = GUICtrlCreateLabel("", 30, 60, 90, 16)
-Global $poloNoobLabel = GUICtrlCreateLabel("", 30, 80, 90, 16)
-Global $poloProTimeLabel = GUICtrlCreateLabel("", 130, 60, 100, 16)
+Local $x = 5
+Local $y = 45
+Local $h = 1
+Local $w = 120
+GUICtrlCreateLabel("", $x, $y, $w, $h)
+GUICtrlSetBkColor(-1, 0x999999)
+GUICtrlCreateLabel("", $x + 1, $y, $w, 1)
+GUICtrlSetBkColor(-1, 0x999999)
+GUICtrlCreateLabel("", $x + 1, $y + 1, $w, $h)
+GUICtrlSetBkColor(-1, 0xffffff)
+
+Global $poloProIndicatorLabel = GUICtrlCreateLabel("►", 5, 50, 10, 16)
+Global $poloNoobIndicatorLabel = GUICtrlCreateLabel("►", 5, 70, 10, 16)
+Global $poloProLabel = GUICtrlCreateLabel("", 20, 50, 65, 16)
+Global $poloNoobLabel = GUICtrlCreateLabel("", 20, 70, 65, 16)
+Global $poloProTimeLabel = GUICtrlCreateLabel("", 90, 50, 35, 16)
+Global $poloCounterLabel = GUICtrlCreateLabel("", 90, 70, 35, 16)
 
 Global $marcoProActive = False
 Global $poloProActive = False
 
 Global $helpButton = -1
 If $secret <> "" Then
-   $helpButton = GUICtrlCreateButton("Help!", 30, 110, 120)
+   $helpButton = GUICtrlCreateButton("Help!", 5, 95, 120)
    GUICtrlSetOnEvent($helpButton, "helpButton")
 EndIf
 
@@ -65,14 +78,18 @@ Func updateGuiValues()
    $marcoNoob = Json_Get($object, ".marco.noob")
    $marcoProActiveFor = Json_Get($object, ".marco.proActiveFor")
    $marcoProCooldown = Json_Get($object, ".marco.proCooldown")
+   $marcoCounter = Json_Get($object, ".marco.counter")
    $poloPro = Json_Get($object, ".polo.pro")
    $poloNoob = Json_Get($object, ".polo.noob")
    $poloProActiveFor = Json_Get($object, ".polo.proActiveFor")
    $poloProCooldown = Json_Get($object, ".polo.proCooldown")
+   $poloCounter = Json_Get($object, ".polo.counter")
    GUICtrlSetData($marcoProLabel, $marcoPro)
    GUICtrlSetData($marcoNoobLabel, $marcoNoob)
+   GUICtrlSetData($marcoCounterLabel, "# "&$marcoCounter)
    GUICtrlSetData($poloProLabel, $poloPro)
    GUICtrlSetData($poloNoobLabel, $poloNoob)
+   GUICtrlSetData($poloCounterLabel, "# "&$poloCounter)
 
    If $marcoProActiveFor > 0 Then
 	  GUICtrlSetData($marcoProIndicatorLabel, "►")
